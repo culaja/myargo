@@ -8,3 +8,4 @@ resources:
   - nginx.yaml
   - http-tunnel.yaml
   - ingress.yaml
+  - kube-tunnel.yaml

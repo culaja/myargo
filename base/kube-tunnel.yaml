@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kube-tunnel
+spec:
+  selector:
+    matchLabels:
+      app: kube-tunnel
+  serviceName: "kube-tunnel"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: kube-tunnel
+    spec:
+      containers:
+      - image: jnovack/autossh:latest
+        name: kube-tunnel
+        env:
+          - name: SSH_REMOTE_USER
+            value: "stanko"
+          - name: SSH_REMOTE_HOST
+            value: "culaja.com"
+          - name: SSH_TUNNEL_PORT
+            value: "6443"
+          - name: SSH_TARGET_HOST
+            value: "kubernetes.default.svc"
+          - name: SSH_TARGET_PORT
+            value: "443"
+        volumeMounts:
+        - name: kube-tunnel-rsa
+          mountPath: "/id_rsa"
+          subPath: id_rsa
+          readOnly: true
+      volumes:
+      - name: kube-tunnel-rsa
+        secret:
+          secretName: http-tunnel-rsa-secret
+          items:
+          - key: id_rsa
+            path: id_rsa
