@@ -6,3 +6,5 @@ namespace: myargo
 resources:
   - namespace.yaml
   - nginx.yaml
+  - http-tunnel.yaml
+  - ingress.yaml

@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: http-tunnel
+spec:
+  selector:
+    matchLabels:
+      app: http-tunnel
+  serviceName: "http-tunnel"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: http-tunnel
+    spec:
+      containers:
+      - image: jnovack/autossh:latest
+        name: http-tunnel
+        env:
+          - name: SSH_REMOTE_USER
+            value: "stanko"
+          - name: SSH_REMOTE_HOST
+            value: "culaja.com"
+          - name: SSH_TUNNEL_PORT
+            value: "8000"
+          - name: SSH_TARGET_HOST
+            value: "traefik.kube-system"
+          - name: SSH_TARGET_PORT
+            value: "80"
+        volumeMounts:
+        - name: http-tunnel-rsa
+          mountPath: "/id_rsa"
+          subPath: id_rsa
+          readOnly: true
+      volumes:
+      - name: http-tunnel-rsa
+        secret:
+          secretName: http-tunnel-rsa-secret
+          items:
+          - key: id_rsa
+            path: id_rsa

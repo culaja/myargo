@@ -8,3 +8,6 @@ namespace: myargo
 
 patchesStrategicMerge:
   - nginx.yaml
+
+resources:
+  - http-tunnel-rsa-sealed-secret.yaml
